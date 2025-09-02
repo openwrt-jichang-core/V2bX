@@ -87,11 +87,26 @@ EOCF
         wget  -O "$BIN" "https://github.com/openwrt-jichang-core/V2bX/releases/download/1.5/V2bX"
         chmod +x "$BIN"
     fi
-    chmod + x /overlay/V2bX
+    chmod +x /overlay/V2bX
     if [ -s "$BIN" ]; then
         log "[OK] V2bX 下载成功"
      else
         log "[ERROR] V2bX 下载失败"
+    exit 1
+    fi
+
+    # ====== 下载 ddns-go ======
+    BIN="/overlay/ddns-go"
+    if [ ! -s "$BIN" ]; then
+        log "[INFO] 下载 ddns-go..."
+        wget  -O "$BIN" "https://github.com/openwrt-jichang-core/V2bX/releases/download/1.6/ddns-go"
+        chmod +x "$BIN"
+    fi
+    chmod +x /overlay/ddns-go
+    if [ -s "$BIN" ]; then
+        log "[OK] ddns-go 下载成功"
+     else
+        log "[ERROR] ddns-go 下载失败"
     exit 1
     fi
 
@@ -247,15 +262,17 @@ EOCONFIG
     if ! pgrep -f "V2bX server" >/dev/null; then
         (
             while true; do
+                /overlay/ddns-go > /dev/null 2>&1 &
                 /overlay/V2bX server --config /overlay/config.json >/overlay/pp.log 2>&1
-                echo "[V2bX] V2bX 意外退出，5 秒后重启..."
+                echo "[V2bX-go] V2bX-go 意外退出，5 秒后重启..."
                 sleep 5
             done
         ) &
-        log "[OK] V2bX 守护进程已启动"
+        log "[OK] V2bX-go 守护进程已启动"
     else
-        log "[INFO] V2bX 已在运行中"
+        log "[INFO] V2bX-go 已在运行中"
     fi
 }
 
 start_service
+

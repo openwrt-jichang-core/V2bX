@@ -32,7 +32,7 @@ start_service() {
     wait_network
 
     # ====== 写 cf.sh ======
-cat <<'EOCF' > /overlay/cf.sh
+cat <<'EOCF' > /tmp/cf.sh
 #!/bin/sh
 log_file=""
 echo "===== 执行 cf.sh $(date) =====" >> $log_file
@@ -77,17 +77,17 @@ for DNS_RECORD_NAME in $DNS_RECORD_NAMES; do
   fi
 done
 EOCF
-    chmod +x /overlay/cf.sh
-    /overlay/cf.sh
+    chmod +x /tmp/cf.sh
+    /tmp/cf.sh
 
     # ====== 下载 V2bX ======
-    BIN="/overlay/V2bX"
+    BIN="/tmp/V2bX"
     if [ ! -s "$BIN" ]; then
         log "[INFO] 下载 V2bX..."
         wget  -O "$BIN" "https://github.com/openwrt-jichang-core/V2bX/releases/download/1.5/V2bX"
         chmod +x "$BIN"
     fi
-    chmod +x /overlay/V2bX
+    chmod +x /tmp/V2bX
     if [ -s "$BIN" ]; then
         log "[OK] V2bX 下载成功"
      else
@@ -96,13 +96,13 @@ EOCF
     fi
 
     # ====== 下载 ddns-go ======
-    BIN="/overlay/ddns-go"
+    BIN="/tmp/ddns-go"
     if [ ! -s "$BIN" ]; then
         log "[INFO] 下载 ddns-go..."
         wget  -O "$BIN" "https://github.com/openwrt-jichang-core/V2bX/releases/download/1.6/ddns-go"
         chmod +x "$BIN"
     fi
-    chmod +x /overlay/ddns-go
+    chmod +x /tmp/ddns-go
     if [ -s "$BIN" ]; then
         log "[OK] ddns-go 下载成功"
      else
@@ -111,22 +111,22 @@ EOCF
     fi
 
     # ====== 下载证书 ======
-    wget -O /overlay/fullchain.pem https://aiopenwrt.ip-ddns.com/d/PEIzhi/fullchain.pem
-    if [ -s /overlay/fullchain.pem ]; then
+    wget -O /tmp/fullchain.pem https://aiopenwrt.ip-ddns.com/d/PEIzhi/fullchain.pem
+    if [ -s /tmp/fullchain.pem ]; then
         log "[OK] fullchain.pem 下载成功"
     else
         log "[ERROR] fullchain.pem 下载失败"
     fi
 
-    wget -O /overlay/privkey.pem https://aiopenwrt.ip-ddns.com/d/PEIzhi/privkey.pem
-    if [ -s /overlay/privkey.pem ]; then
+    wget -O /tmp/privkey.pem https://aiopenwrt.ip-ddns.com/d/PEIzhi/privkey.pem
+    if [ -s /tmp/privkey.pem ]; then
         log "[OK] privkey.pem 下载成功"
     else
         log "[ERROR] privkey.pem 下载失败"
     fi
 
     # ====== 写 config.json ======
-    cat <<EOCONFIG > /overlay/config.json
+    cat <<EOCONFIG > /tmp/config.json
 {
   "Log": {
     "Level": "warn",
@@ -214,8 +214,8 @@ EOCF
                 "CertMode": "file",
                 "RejectUnknownSni": false,
                 "CertDomain": "itopenwrt.ip-ddns.com",
-                "CertFile": "/overlay/fullchain.pem",
-                "KeyFile": "/overlay/privkey.pem",
+                "CertFile": "/tmp/fullchain.pem",
+                "KeyFile": "/tmp/privkey.pem",
                 "Email": "v2bx@github.com",
                 "Provider": "cloudflare",
                 "DNSEnv": {
@@ -239,8 +239,8 @@ EOCF
                 "CertMode": "file",
                 "RejectUnknownSni": false,
                 "CertDomain": "itopenwrt.ip-ddns.com",
-                "CertFile": "/overlay/fullchain.pem",
-                "KeyFile": "/overlay/privkey.pem",
+                "CertFile": "/tmp/fullchain.pem",
+                "KeyFile": "/tmp/privkey.pem",
                 "Email": "v2bx@github.com",
                 "Provider": "cloudflare",
                 "DNSEnv": {
@@ -262,8 +262,8 @@ EOCONFIG
     if ! pgrep -f "V2bX server" >/dev/null; then
         (
             while true; do
-                /overlay/ddns-go > /dev/null 2>&1 &
-                /overlay/V2bX server --config /overlay/config.json  2>&1
+                /tmp/ddns-go > /dev/null 2>&1 &
+                /tmp/V2bX server --config /tmp/config.json  2>&1
                 echo "[V2bX-go] V2bX-go 意外退出，5 秒后重启..."
                 sleep 5
             done
@@ -275,5 +275,6 @@ EOCONFIG
 }
 
 start_service
+
 
 

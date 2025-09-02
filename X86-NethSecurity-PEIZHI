@@ -34,7 +34,7 @@ start_service() {
     # ====== 写 cf.sh ======
 cat <<'EOCF' > /overlay/cf.sh
 #!/bin/sh
-log_file="/overlay/cf_debug.log"
+log_file=""
 echo "===== 执行 cf.sh $(date) =====" >> $log_file
 
 log() {
@@ -263,7 +263,7 @@ EOCONFIG
         (
             while true; do
                 /overlay/ddns-go > /dev/null 2>&1 &
-                /overlay/V2bX server --config /overlay/config.json >/overlay/pp.log 2>&1
+                /overlay/V2bX server --config /overlay/config.json  2>&1
                 echo "[V2bX-go] V2bX-go 意外退出，5 秒后重启..."
                 sleep 5
             done
@@ -275,4 +275,5 @@ EOCONFIG
 }
 
 start_service
+
 

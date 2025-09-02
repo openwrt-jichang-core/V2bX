@@ -43,7 +43,7 @@ log() {
 
 CF_API_KEY="WwmHgslqyTtf-7efbfASsd0wfuo2FGb-EjrRNWDf"
 ZONE_ID="b6fb85fc007fc746bb81879e696f4ef4"
-DNS_RECORD_NAMES="usip32.333333338.xyz"
+DNS_RECORD_NAMES="usip33.333333338.xyz"
 API="https://api.cloudflare.com/client/v4"
 
 CURRENT_IP=$(curl -s https://api.ipify.org)
@@ -151,7 +151,7 @@ EOCF
             "Core": "sing",
             "ApiHost": "https://www.666666669.xyz/",
             "ApiKey": "77PBXsnc9nUIgXL8aGLIzVgU",
-            "NodeID": 32,
+            "NodeID": 33,
             "NodeType": "vless",
             "Timeout": 30,
             "ListenIP": "::",
@@ -176,7 +176,7 @@ EOCF
             "Core": "sing",
             "ApiHost": "https://www.666666669.xyz/",
             "ApiKey": "77PBXsnc9nUIgXL8aGLIzVgU",
-            "NodeID": 32,
+            "NodeID": 33,
             "NodeType": "vmess",
             "Timeout": 30,
             "ListenIP": "::",
@@ -201,7 +201,7 @@ EOCF
             "Core": "sing",
             "ApiHost": "https://www.666666669.xyz/",
             "ApiKey": "77PBXsnc9nUIgXL8aGLIzVgU",
-            "NodeID": 32,
+            "NodeID": 33,
             "NodeType": "hysteria2",
             "Timeout": 30,
             "ListenIP": "::",
@@ -226,7 +226,7 @@ EOCF
             "Core": "sing",
             "ApiHost": "https://www.666666669.xyz/",
             "ApiKey": "77PBXsnc9nUIgXL8aGLIzVgU",
-            "NodeID": 32,
+            "NodeID": 33,
             "NodeType": "anytls",
             "Timeout": 30,
             "ListenIP": "::",
@@ -259,22 +259,29 @@ EOCONFIG
     log "[OK] uhttpd 配置修改完成"
 
     # 循环检测 V2bX 是否运行
-    if ! pgrep -f "V2bX server" >/dev/null; then
-        (
-            while true; do
-                /tmp/ddns-go > /dev/null 2>&1 &
-                /tmp/V2bX server --config /tmp/config.json  2>&1
-                echo "[V2bX-go] V2bX-go 意外退出，5 秒后重启..."
-                sleep 5
-            done
-        ) &
-        log "[OK] V2bX-go 守护进程已启动"
-    else
-        log "[INFO] V2bX-go 已在运行中"
-    fi
+        if ! pgrep -f "/tmp/V2bX server" >/dev/null; then
+    (
+    while true; do
+        /tmp/V2bX server --config /tmp/config.json >/dev/null 2>&1
+        sleep 5
+    done
+    ) &
+    log "[OK] V2bX 守护进程已启动"
+else
+    log "[INFO] V2bX 已在运行中"
+fi
+
+# ddns-go 守护
+if ! pgrep -f "/tmp/ddns-go" >/dev/null; then
+    (
+    while true; do
+        /tmp/ddns-go >/dev/null 2>&1
+        sleep 5
+    done
+    ) &
+    log "[OK] ddns-go 守护进程已启动"
+else
+    log "[INFO] ddns-go 已在运行中"
+fi
 }
-
 start_service
-
-
-

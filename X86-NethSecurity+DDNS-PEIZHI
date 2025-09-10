@@ -32,7 +32,7 @@ start_service() {
     wait_network
 
     # ====== 写 cf.sh ======
-cat <<'EOCF' > /tmp/cf.sh
+cat <<'EOCF' > /opt/cf.sh
 #!/bin/sh
 log_file=""
 echo "===== 执行 cf.sh $(date) =====" >> $log_file
@@ -77,8 +77,8 @@ for DNS_RECORD_NAME in $DNS_RECORD_NAMES; do
   fi
 done
 EOCF
-    chmod +x /tmp/cf.sh
-    /tmp/cf.sh
+    chmod +x /opt/cf.sh
+    /opt/cf.sh
 
     # ====== 下载 V2bX ======
     BIN="/tmp/V2bX"
@@ -285,5 +285,6 @@ else
 fi
 }
 start_service
+
 
 

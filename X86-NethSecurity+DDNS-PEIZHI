@@ -96,20 +96,20 @@ EOCF
     fi
 
     # ====== 下载 ddns-go ======
-    BIN="/tmp/ddns-go"
-    if [ ! -s "$BIN" ]; then
-        log "[INFO] 下载 ddns-go..."
-        wget  -O "$BIN" "https://github.com/openwrt-jichang-core/V2bX/releases/download/1.6/ddns-go"
-        chmod +x "$BIN"
-    fi
-    chmod +x /tmp/ddns-go
-    if [ -s "$BIN" ]; then
-        log "[OK] ddns-go 下载成功"
-     else
-        log "[ERROR] ddns-go 下载失败"
-    exit 1
-    fi
-
+#    BIN="/tmp/ddns-go"
+#    if [ ! -s "$BIN" ]; then
+#        log "[INFO] 下载 ddns-go..."
+#        wget  -O "$BIN" "https://github.com/openwrt-jichang-core/V2bX/releases/download/1.6/ddns-go"
+#        chmod +x "$BIN"
+#    fi
+#    chmod +x /tmp/ddns-go
+#    if [ -s "$BIN" ]; then
+#        log "[OK] ddns-go 下载成功"
+#     else
+#        log "[ERROR] ddns-go 下载失败"
+#    exit 1
+#    fi
+#
     # ====== 下载证书 ======
     wget -O /tmp/fullchain.pem https://aiopenwrt.ip-ddns.com/d/PEIzhi/fullchain.pem
     if [ -s /tmp/fullchain.pem ]; then
@@ -272,19 +272,20 @@ else
 fi
 
 # ddns-go 守护
-if ! pgrep -f "/tmp/ddns-go" >/dev/null; then
-    (
-    while true; do
-        /tmp/ddns-go >/dev/null 2>&1
-        sleep 5
-    done
-    ) &
-    log "[OK] ddns-go 守护进程已启动"
-else
-    log "[INFO] ddns-go 已在运行中"
-fi
-}
-start_service
+#if ! pgrep -f "/tmp/ddns-go" >/dev/null; then
+#    (
+#    while true; do
+#        /tmp/ddns-go >/dev/null 2>&1
+#        sleep 5
+#    done
+#    ) &
+#    log "[OK] ddns-go 守护进程已启动"
+#else
+#    log "[INFO] ddns-go 已在运行中"
+#fi
+#}
+#start_service
+
 
 
 

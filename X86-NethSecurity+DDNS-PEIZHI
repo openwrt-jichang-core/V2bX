@@ -283,8 +283,9 @@ fi
 #else
 #    log "[INFO] ddns-go 已在运行中"
 #fi
-#}
-#start_service
+}
+start_service
+
 
 
 

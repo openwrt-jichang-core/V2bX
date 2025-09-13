@@ -1,17 +1,10 @@
 {
-  "baseURL": "https://www.666666669.xyz/api/v1/",
-  "baseDYURL": "https://tiziya-zone-35j5gzft7lc3-1323316545.eo-edgefunctions1.com/api/v1/client/subscribe?token=2704165367b5aaef3eec9d6f6058292c",
-  "mainregisterURL": "https://www.666666669.xyz/#/register?code=",
-  "paymentURL": "xxxxx",
-  "telegramurl": "https://t.me/fastlink",
-  "kefuurl": "https://gooapis.com/fastlink/",
-  "websiteURL": "https://gooapis.com/fastlink/",
-  "crisptoken": "77PBXsnc9nUIgXL8aGLIzVgU",
-  "banners": [
-    "https://image.gooapis.com/api/images/12-11-56.png",
-    "https://image.gooapis.com/api/images/12-44-57.png",
-    "https://image.gooapis.com/api/images/12-47-03.png"
-  ],
-  "message": "OK",
-  "code": 1
+  "nodeId": 1,
+  "api": {
+    "host": "https://www.666666669.xyz/",
+    "key": "77PBXsnc9nUIgXL8aGLIzVgU",
+    "type": "xboard"
+  },
+  "checkRate": 60,
+  "logLevel": "info"
 }

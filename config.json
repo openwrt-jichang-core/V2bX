@@ -1,14 +1,15 @@
+"crisptoken"是随机的吗？还是Xboard与节点通讯的密钥。
 {
-  "baseURL": "https://www.666666669.xyz/api/v1/",
-  "baseDYURL": "https://api.gooapis.com/api/vpnnodes.php",
-  "mainregisterURL": "https://www.666666669.xyz/#/register?code=",
-  "paymentURL": "https://www.666666669.xyz/#/plan",
-  "telegramurl": "https://t.me/你的TG群",
-  "kefuurl": "https://www.666666669.xyz/kefu/",
-  "websiteURL": "https://www.666666669.xyz/",
-  "crisptoken": "7fe7fc6f-756f-42c2-aa94-9abd95f8e095",
-  "banners": [
-    "https://cdn.xxx.com/banner1.png",
+  "baseURL": "https://www.666666669.xyz/api/v1/",    #API
+  "baseDYURL": "https://api.gooapis.com/api/vpnnodes.php",   #测ping
+  "mainregisterURL": "https://www.666666669.xyz/#/register?code=",  #登录界面
+  "paymentURL": "https://www.666666669.xyz/#/plan",     #支付页面
+  "telegramurl": "https://t.me/你的TG群",                              #TG群
+  "kefuurl": "https://www.666666669.xyz/kefu/",                 #客服支持
+  "websiteURL": "https://www.666666669.xyz/",                  #官网
+  "crisptoken": "7fe7fc6f-756f-42c2-aa94-9abd95f8e095",  #这里未能理解
+  "banners": [                                                                        #广告
+    "https://cdn.xxx.com/banner1.png",                                
     "https://cdn.xxx.com/banner2.png"
   ],
   "message": "OK",

@@ -1,0 +1,17 @@
+{
+  "baseURL": "https://www.666666669.xyz/api/v1/",
+  "baseDYURL": "https://api.gooapis.com/api/vpnnodes.php",
+  "mainregisterURL": "https://www.666666669.xyz/#/register?code=",
+  "paymentURL": "https://www.666666669.xyz/#/plan",
+  "telegramurl": "https://t.me/fastlink",
+  "kefuurl": "https://gooapis.com/fastlink/",
+  "websiteURL": "https://www.666666669.xyz/",
+  "crisptoken": "77PBXsnc9nUIgXL8aGLIzVgU",
+  "banners": [
+    "https://image.gooapis.com/api/images/12-11-56.png",
+    "https://image.gooapis.com/api/images/12-44-57.png",
+    "https://image.gooapis.com/api/images/12-47-03.png"
+  ],
+  "message": "OK",
+  "code": 1
+}

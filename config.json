@@ -1,15 +1,16 @@
 {
-  "baseURL": "https://www.666666669.xyz/api/v1/", 
-  "baseDYURL": "https://api.gooapis.com/api/vpnnodes.php",
-  "mainregisterURL": "https://www.666666669.xyz/#/register?code=sxx7RAZ0", 
-  "paymentURL": "https://www.666666669.xyz/#/plan",
-  "telegramurl": "https://t.me/6666",
-  "kefuurl": "https://www.666666669.xyz/kefu/",  
-  "websiteURL": "https://www.666666669.xyz/",  
-  "crisptoken": "97e40226c854acac-ORD",  
-  "banners": [ 
-    "https://cdn.xxx.com/banner1.png",                                
-    "https://cdn.xxx.com/banner2.png"
+  "baseURL": "https://www.666666669.xyz/api/v1/",
+  "baseDYURL": "https://www.666666669.xyz/api/v1/guest/comm/config?t=1757727579639",
+  "mainregisterURL": "https://lelian.app/#/register?code=",
+  "paymentURL": "xxxxx",
+  "telegramurl": "https://t.me/fastlink",
+  "kefuurl": "https://gooapis.com/fastlink/",
+  "websiteURL": "https://gooapis.com/fastlink/",
+  "crisptoken": "5546c6ea-4b1e-41bc-80e4-4b6648cbca76",
+  "banners": [
+    "https://image.gooapis.com/api/images/12-11-56.png",
+    "https://image.gooapis.com/api/images/12-44-57.png",
+    "https://image.gooapis.com/api/images/12-47-03.png"
   ],
   "message": "OK",
   "code": 1

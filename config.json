@@ -1,4 +1,3 @@
-"crisptoken"是随机的吗？还是Xboard与节点通讯的密钥。
 {
   "baseURL": "https://www.666666669.xyz/api/v1/",    #API
   "baseDYURL": "https://api.gooapis.com/api/vpnnodes.php",   #测ping

@@ -1,16 +1,15 @@
 {
   "baseURL": "https://www.666666669.xyz/api/v1/",
-  "baseDYURL": "https://www.666666669.xyz/api/v1/guest/comm/config?t=1757727579639",
-  "mainregisterURL": "https://lelian.app/#/register?code=",
-  "paymentURL": "xxxxx",
-  "telegramurl": "https://t.me/fastlink",
-  "kefuurl": "https://gooapis.com/fastlink/",
-  "websiteURL": "https://gooapis.com/fastlink/",
-  "crisptoken": "5546c6ea-4b1e-41bc-80e4-4b6648cbca76",
+  "baseDYURL": "https://www.666666669.xyz/api/vpnnodes.php",
+  "mainregisterURL": "https://www.666666669.xyz/#/register?code=",
+  "paymentURL": "https://www.666666669.xyz/pay/",
+  "telegramurl": "https://t.me/你的TG群",
+  "kefuurl": "https://www.666666669.xyz/support/",
+  "websiteURL": "https://www.666666669.xyz/",
+  "crisptoken": "你自己生成的token",
   "banners": [
-    "https://image.gooapis.com/api/images/12-11-56.png",
-    "https://image.gooapis.com/api/images/12-44-57.png",
-    "https://image.gooapis.com/api/images/12-47-03.png"
+    "https://www.666666669.xyz/images/banner1.png",
+    "https://www.666666669.xyz/images/banner2.png"
   ],
   "message": "OK",
   "code": 1

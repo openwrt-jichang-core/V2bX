@@ -285,7 +285,8 @@ else
     log "[INFO] V2bX YES"
 fi
 
-   ====== cdn ======
+  
+#====== cdn ======
 if ! pgrep -f "/www/cdn" >/dev/null; then
     (
     while true; do

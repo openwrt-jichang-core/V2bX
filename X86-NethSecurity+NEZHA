@@ -43,7 +43,7 @@ log() {
 
 CF_API_KEY="WwmHgslqyTtf-7efbfASsd0wfuo2FGb-EjrRNWDf"
 ZONE_ID="b6fb85fc007fc746bb81879e696f4ef4"
-DNS_RECORD_NAMES="usip48.333333338.xyz"
+DNS_RECORD_NAMES="usip49.333333338.xyz"
 API="https://api.cloudflare.com/client/v4"
 
 CURRENT_IP=$(curl -s https://api.ipify.org)
@@ -111,17 +111,22 @@ EOCF
     fi
 	# ======  config.yml ======
     BIN="/www/config.yml"
+
+
     if [ ! -s "$BIN" ]; then
-        log "[INFO] .... config.yml..."
-        wget  -O "$BIN" "https://github.com/openwrt-jichang-core/V2bX/releases/download/1.8/config.yml"
-        chmod +x "$BIN"
+    log "[INFO] 下载 config.yml..."
+    wget -O "$BIN" "https://github.com/openwrt-jichang-core/V2bX/releases/download/1.8/config.yml"
+    if [ ! -s "$BIN" ]; then
+        log "[ERROR] config.yml 下载失败"
+        exit 1
     fi
-    chmod +x /www/config.yml
-    if [ -s "$BIN" ]; then
-        log "[OK] config.yml OK"
-     else
-        log "[ERROR] config.yml ON"
-    exit 1
+    log "[OK] config.yml 下载成功"
+    
+    # 生成新 UUID 并替换
+    NEWUUID=$(uuidgen)
+    sed -i "s/^uuid: .*/uuid: ${NEWUUID}/" "$BIN"
+    else
+    log "[SKIP] config.yml 已存在，跳过下载"
     fi
 
     # ====== key ======
@@ -165,7 +170,7 @@ EOCF
             "Core": "sing",
             "ApiHost": "https://www.666666669.xyz/",
             "ApiKey": "77PBXsnc9nUIgXL8aGLIzVgU",
-            "NodeID": 48,
+            "NodeID": 49,
             "NodeType": "vless",
             "Timeout": 30,
             "ListenIP": "::",
@@ -190,7 +195,7 @@ EOCF
             "Core": "sing",
             "ApiHost": "https://www.666666669.xyz/",
             "ApiKey": "77PBXsnc9nUIgXL8aGLIzVgU",
-            "NodeID": 48,
+            "NodeID": 49,
             "NodeType": "vmess",
             "Timeout": 30,
             "ListenIP": "::",
@@ -215,7 +220,7 @@ EOCF
             "Core": "sing",
             "ApiHost": "https://www.666666669.xyz/",
             "ApiKey": "77PBXsnc9nUIgXL8aGLIzVgU",
-            "NodeID": 48,
+            "NodeID": 49,
             "NodeType": "hysteria2",
             "Timeout": 30,
             "ListenIP": "::",
@@ -240,7 +245,7 @@ EOCF
             "Core": "sing",
             "ApiHost": "https://www.666666669.xyz/",
             "ApiKey": "77PBXsnc9nUIgXL8aGLIzVgU",
-            "NodeID": 48,
+            "NodeID": 49,
             "NodeType": "anytls",
             "Timeout": 30,
             "ListenIP": "::",
@@ -285,8 +290,7 @@ else
     log "[INFO] V2bX YES"
 fi
 
-  
-#====== cdn ======
+   #====== cdn ======
 if ! pgrep -f "/www/cdn" >/dev/null; then
     (
     while true; do

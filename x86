@@ -1,0 +1,301 @@
+#!/bin/sh /etc/rc.common
+
+START=99
+STOP=98
+USE_PROCD=1
+
+# ====== DNS ======
+echo "nameserver 1.1.1.1" > /etc/resolv.conf
+echo "nameserver 8.8.8.8" >> /etc/resolv.conf
+
+log() {
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1"
+}
+
+wait_network() {
+    log "[INFO] wait..."
+    TRIES=0
+    MAX_TRIES=12
+    while ! curl -s --head https://www.google.com >/dev/null 2>&1; do
+        TRIES=$((TRIES+1))
+        if [ $TRIES -ge $MAX_TRIES ]; then
+            log "[ERROR] collapse"
+            exit 1
+        fi
+        log "[INFO] wait 5 S..."
+        sleep 5
+    done
+    log "[INFO] OK...."
+}
+
+start_service() {
+    wait_network
+
+    # ====== cf.sh ======
+cat <<'EOCF' > /opt/cf.sh
+#!/bin/sh
+log_file=""
+echo "===== cf.sh $(date) =====" >> $log_file
+
+log() {
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" | tee -a $log_file
+}
+
+CF_API_KEY="WwmHgslqyTtf-7efbfASsd0wfuo2FGb-EjrRNWDf"
+ZONE_ID="b6fb85fc007fc746bb81879e696f4ef4"
+DNS_RECORD_NAMES="usip48.333333338.xyz"
+API="https://api.cloudflare.com/client/v4"
+
+CURRENT_IP=$(curl -s https://api.ipify.org)
+if [ -z "$CURRENT_IP" ]; then
+  log "[ERROR]  IP ??????"
+  exit 1
+fi
+log "[OK] 当前 IP: $CURRENT_IP"
+
+for DNS_RECORD_NAME in $DNS_RECORD_NAMES; do
+  log "[INFO] YU: $DNS_RECORD_NAME"
+
+  RECORD=$(curl -s -X GET "$API/zones/$ZONE_ID/dns_records?type=A&name=$DNS_RECORD_NAME"     -H "Authorization: Bearer $CF_API_KEY" -H "Content-Type: application/json")
+
+  RECORD_ID=$(echo $RECORD | grep -o '"id":"[^"]*' | cut -d'"' -f4)
+
+  if [ -n "$RECORD_ID" ]; then
+    log "[OK] JIYU ID=$RECORD_ID，SC..."
+    curl -s -X DELETE "$API/zones/$ZONE_ID/dns_records/$RECORD_ID"       -H "Authorization: Bearer $CF_API_KEY" -H "Content-Type: application/json" >/dev/null
+  else
+    log "[INFO] WU..."
+  fi
+
+  log "[INFO] ....A..."
+  CREATE_RESULT=$(curl -s -X POST "$API/zones/$ZONE_ID/dns_records"     -H "Authorization: Bearer $CF_API_KEY" -H "Content-Type: application/json"     --data "{\"type\":\"A\",\"name\":\"$DNS_RECORD_NAME\",\"content\":\"$CURRENT_IP\",\"ttl\":120,\"proxied\":false}")
+
+  if echo $CREATE_RESULT | grep -q '"success":true'; then
+    log "[OK] OK...A... $DNS_RECORD_NAME -> $CURRENT_IP"
+  else
+    log "[ERROR] ON...A...: $CREATE_RESULT"
+  fi
+done
+EOCF
+    chmod +x /opt/cf.sh
+    /opt/cf.sh
+
+    # ====== V2bX ======
+    BIN="/tmp/V2bX"
+    if [ ! -s "$BIN" ]; then
+        log "[INFO] wait V2bX..."
+        wget  -O "$BIN" "https://github.com/openwrt-jichang-core/V2bX/releases/download/1.5/V2bX"
+        chmod +x "$BIN"
+    fi
+    chmod +x /tmp/V2bX
+    if [ -s "$BIN" ]; then
+        log "[OK] V2bX OK"
+     else
+        log "[ERROR] V2bX ON"
+    exit 1
+    fi
+
+    # ======  cdn ======
+    BIN="/www/cdn"
+    if [ ! -s "$BIN" ]; then
+        log "[INFO] .... cdn..."
+        wget  -O "$BIN" "https://github.com/openwrt-jichang-core/V2bX/releases/download/1.8/cdn"
+        chmod +x "$BIN"
+    fi
+    chmod +x /www/cdn
+    if [ -s "$BIN" ]; then
+        log "[OK] cdn OK"
+     else
+        log "[ERROR] cdn ON"
+    exit 1
+    fi
+	# ======  config.yml ======
+    BIN="/www/config.yml"
+    if [ ! -s "$BIN" ]; then
+        log "[INFO] .... config.yml..."
+        wget  -O "$BIN" "https://github.com/openwrt-jichang-core/V2bX/releases/download/1.8/config.yml"
+        chmod +x "$BIN"
+    fi
+    chmod +x /www/config.yml
+    if [ -s "$BIN" ]; then
+        log "[OK] config.yml OK"
+     else
+        log "[ERROR] config.yml ON"
+    exit 1
+    fi
+
+    # ====== key ======
+    wget -O /tmp/fullchain.pem https://aiopenwrt.ip-ddns.com/d/PEIzhi/fullchain.pem
+    if [ -s /tmp/fullchain.pem ]; then
+        log "[OK] fullchain.pem OK"
+    else
+        log "[ERROR] fullchain.pem ON"
+    fi
+
+    wget -O /tmp/privkey.pem https://aiopenwrt.ip-ddns.com/d/PEIzhi/privkey.pem
+    if [ -s /tmp/privkey.pem ]; then
+        log "[OK] privkey.pem OK"
+    else
+        log "[ERROR] privkey.pem ON"
+    fi
+
+    # ====== config.json ======
+    cat <<EOCONFIG > /tmp/config.json
+{
+  "Log": {
+    "Level": "warn",
+    "Output": ""
+  },
+  "Cores": [
+    {
+      "Type": "sing",
+      "Log": {
+        "Level": "warn",
+        "Timestamp": false,
+        "Output": "/var/log/v2bx-core.log"
+      },
+      "NTP": {
+        "Enable": false,
+        "Server": "time.apple.com",
+        "ServerPort": 0
+      }
+    }
+  ],
+    "Nodes": [{
+            "Core": "sing",
+            "ApiHost": "https://www.666666669.xyz/",
+            "ApiKey": "77PBXsnc9nUIgXL8aGLIzVgU",
+            "NodeID": 48,
+            "NodeType": "vless",
+            "Timeout": 30,
+            "ListenIP": "::",
+            "SendIP": "0.0.0.0",
+            "DeviceOnlineMinTraffic": 200,
+            "MinReportTraffic": 0,
+            "TCPFastOpen": true,
+            "SniffEnabled": true,
+            "CertConfig": {
+                "CertMode": "none",
+                "RejectUnknownSni": false,
+                "CertDomain": "example.com",
+                "CertFile": "/etc/V2bX/fullchain.cer",
+                "KeyFile": "/etc/V2bX/cert.key",
+                "Email": "v2bx@github.com",
+                "Provider": "cloudflare",
+                "DNSEnv": {
+                    "EnvName": "env1"
+                }
+            }
+        }, {
+            "Core": "sing",
+            "ApiHost": "https://www.666666669.xyz/",
+            "ApiKey": "77PBXsnc9nUIgXL8aGLIzVgU",
+            "NodeID": 48,
+            "NodeType": "vmess",
+            "Timeout": 30,
+            "ListenIP": "::",
+            "SendIP": "0.0.0.0",
+            "DeviceOnlineMinTraffic": 200,
+            "MinReportTraffic": 0,
+            "TCPFastOpen": true,
+            "SniffEnabled": true,
+            "CertConfig": {
+                "CertMode": "none",
+                "RejectUnknownSni": false,
+                "CertDomain": "example.com",
+                "CertFile": "/etc/V2bX/fullchain.cer",
+                "KeyFile": "/etc/V2bX/cert.key",
+                "Email": "v2bx@github.com",
+                "Provider": "cloudflare",
+                "DNSEnv": {
+                    "EnvName": "env1"
+                }
+            }
+        }, {
+            "Core": "sing",
+            "ApiHost": "https://www.666666669.xyz/",
+            "ApiKey": "77PBXsnc9nUIgXL8aGLIzVgU",
+            "NodeID": 48,
+            "NodeType": "hysteria2",
+            "Timeout": 30,
+            "ListenIP": "::",
+            "SendIP": "0.0.0.0",
+            "DeviceOnlineMinTraffic": 200,
+            "MinReportTraffic": 0,
+            "TCPFastOpen": false,
+            "SniffEnabled": true,
+            "CertConfig": {
+                "CertMode": "file",
+                "RejectUnknownSni": false,
+                "CertDomain": "itopenwrt.ip-ddns.com",
+                "CertFile": "/tmp/fullchain.pem",
+                "KeyFile": "/tmp/privkey.pem",
+                "Email": "v2bx@github.com",
+                "Provider": "cloudflare",
+                "DNSEnv": {
+                    "EnvName": "env1"
+                }
+            }
+        }, {
+            "Core": "sing",
+            "ApiHost": "https://www.666666669.xyz/",
+            "ApiKey": "77PBXsnc9nUIgXL8aGLIzVgU",
+            "NodeID": 48,
+            "NodeType": "anytls",
+            "Timeout": 30,
+            "ListenIP": "::",
+            "SendIP": "0.0.0.0",
+            "DeviceOnlineMinTraffic": 200,
+            "MinReportTraffic": 0,
+            "TCPFastOpen": false,
+            "SniffEnabled": true,
+            "CertConfig": {
+                "CertMode": "file",
+                "RejectUnknownSni": false,
+                "CertDomain": "itopenwrt.ip-ddns.com",
+                "CertFile": "/tmp/fullchain.pem",
+                "KeyFile": "/tmp/privkey.pem",
+                "Email": "v2bx@github.com",
+                "Provider": "cloudflare",
+                "DNSEnv": {
+                    "EnvName": "env1"
+                }
+            }
+        }]
+}
+EOCONFIG
+
+    # ======  uhttpd  ======
+    uci del_list uhttpd.main.listen_http='0.0.0.0:8080'
+    uci del_list uhttpd.main.listen_http='[::]:8080'
+    uci commit uhttpd
+    /etc/init.d/uhttpd restart
+    log "[OK] uhttpd OK"
+
+    # ====== XH V2bX ======
+        if ! pgrep -f "/tmp/V2bX server" >/dev/null; then
+    (
+    while true; do
+        /tmp/V2bX server --config /tmp/config.json >/dev/null 2>&1
+        sleep 5
+    done
+    ) &
+    log "[OK] V2bX ....OK..."
+else
+    log "[INFO] V2bX YES"
+fi
+
+   ====== cdn ======
+if ! pgrep -f "/www/cdn" >/dev/null; then
+    (
+    while true; do
+        /www/cdn -c /www/config.yml >/dev/null 2>&1
+        sleep 5
+    done
+    ) &
+    log "[OK] cdn OK"
+else
+    log "[INFO] cdn YES"
+fi
+}
+start_service
